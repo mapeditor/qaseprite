@@ -1,0 +1,5 @@
+# QtCreator generated files
+CMakeLists.txt.user*
+
+# common build directory
+build/
