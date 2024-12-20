@@ -22,7 +22,7 @@ jobs:
     - name: Setup ccache
       uses: hendrikmuhs/ccache-action@v1
       with:
-        max-size: 250M
+        max-size: 50M
 
     - name: Install dependencies
       run: |
@@ -44,3 +44,4 @@ jobs:
           -DUSE_SHARED_FREETYPE=on \
           -DUSE_SHARED_HARFBUZZ=on
         cmake --build build --config Release
+        cmake --install build --config Release
