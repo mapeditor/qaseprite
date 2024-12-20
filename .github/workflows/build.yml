@@ -1,0 +1,57 @@
+name: Build
+
+on:
+  push:
+    paths-ignore:
+    - '**.md'
+  pull_request:
+    paths-ignore:
+    - '**.md'
+
+jobs:
+  ubuntu:
+    name: Ubuntu ${{ matrix.ubuntu_version }} (Qt ${{ matrix.qt_version }})
+    runs-on: ubuntu-${{ matrix.ubuntu_version }}
+
+    strategy:
+      matrix:
+        include:
+        - ubuntu_version: 22.04
+          qt_version: 5
+          qt_package: qtbase5-dev
+        - ubuntu_version: 24.04
+          qt_version: 6
+          qt_package: qt6-base-dev
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        submodules: 'recursive'
+
+    - name: Setup ccache
+      uses: hendrikmuhs/ccache-action@v1
+      with:
+        max-size: 50M
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get install \
+          ${{ matrix.qt_package }} \
+          libfreetype-dev \
+          libgl1-mesa-dev \
+          libharfbuzz-dev \
+          libpixman-1-dev \
+          libxcursor-dev \
+          libxi-dev \
+          zlib1g-dev
+
+    - name: Build
+      run: |
+        cmake -B build -DCMAKE_BUILD_TYPE=Release \
+          -DUSE_SHARED_ZLIB=on \
+          -DUSE_SHARED_PIXMAN=on \
+          -DUSE_SHARED_FREETYPE=on \
+          -DUSE_SHARED_HARFBUZZ=on
+        cmake --build build --config Release
+        sudo cmake --install build --config Release
