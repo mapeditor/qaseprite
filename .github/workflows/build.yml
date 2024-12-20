@@ -1,0 +1,46 @@
+name: Build
+
+on:
+  push:
+    paths-ignore:
+    - '**.md'
+  pull_request:
+    paths-ignore:
+    - '**.md'
+
+jobs:
+  ubuntu:
+    name: Ubuntu
+    runs-on: ubuntu-24.04
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        submodules: 'recursive'
+
+    - name: Setup ccache
+      uses: hendrikmuhs/ccache-action@v1
+      with:
+        max-size: 250M
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get install \
+          libfreetype-dev \
+          libgl1-mesa-dev \
+          libharfbuzz-dev \
+          libpixman-1-dev \
+          libxcursor-dev \
+          libxi-dev \
+          qtbase5-dev \
+          zlib1g-dev
+
+    - name: Build
+      run: |
+        cmake -B build -DCMAKE_BUILD_TYPE=Release \
+          -DUSE_SHARED_ZLIB=on \
+          -DUSE_SHARED_PIXMAN=on \
+          -DUSE_SHARED_FREETYPE=on \
+          -DUSE_SHARED_HARFBUZZ=on
+        cmake --build build --config Release
