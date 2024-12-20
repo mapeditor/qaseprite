@@ -13,14 +13,15 @@ jobs:
     name: Ubuntu ${{ matrix.ubuntu_version }} (Qt ${{ matrix.qt_version }})
     runs-on: ubuntu-24.04
 
-    matrix:
-      include:
-      - ubuntu_version: 22.04
-        qt_version: 5
-        qt_package: qtbase5-dev
-      - ubuntu_version: 24.04
-        qt_version: 6
-        qt_package: qt6-base-dev
+    strategy:
+      matrix:
+        include:
+        - ubuntu_version: 22.04
+          qt_version: 5
+          qt_package: qtbase5-dev
+        - ubuntu_version: 24.04
+          qt_version: 6
+          qt_package: qt6-base-dev
 
     steps:
     - name: Checkout repository
