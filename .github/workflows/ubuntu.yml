@@ -10,7 +10,7 @@ on:
     - '**.md'
 
 jobs:
-  build:
+  linux:
 
     runs-on: ubuntu-24.04
 
@@ -37,4 +37,4 @@ jobs:
     - name: Build
       run: |
         cmake -B build -DCMAKE_BUILD_TYPE=Release
-        cmake --build build --config Release
+        cmake --build build --config Release --target qaseprite
