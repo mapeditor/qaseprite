@@ -11,7 +11,7 @@ on:
 jobs:
   ubuntu:
     name: Ubuntu ${{ matrix.ubuntu_version }} (Qt ${{ matrix.qt_version }})
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-${{ matrix.ubuntu_version }}
 
     strategy:
       matrix:
