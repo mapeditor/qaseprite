@@ -13,22 +13,14 @@
 #include <QImage>
 #include <QImageIOPlugin>
 
-class QtFileInterface final : public dio::FileInterface
-{
+class QtFileInterface final : public dio::FileInterface {
 public:
     QtFileInterface(QIODevice *device)
         : m_device(device)
     {}
 
-    bool ok() const override
-    {
-        return m_ok;
-    }
-
-    size_t tell() override
-    {
-        return m_device->pos();
-    }
+    bool ok() const override { return m_ok; }
+    size_t tell() override { return m_device->pos(); }
 
     void seek(size_t absPos) override
     {
@@ -44,9 +36,9 @@ public:
         return c;
     }
 
-    size_t readBytes(uint8_t* buf, size_t n) override
+    size_t readBytes(uint8_t *buf, size_t n) override
     {
-        auto bytesRead = m_device->read(reinterpret_cast<char*>(buf), n);
+        auto bytesRead = m_device->read(reinterpret_cast<char *>(buf), n);
         if (bytesRead == -1)
             m_ok = false;
         return bytesRead;
@@ -63,57 +55,30 @@ private:
     bool m_ok = true;
 };
 
-
-class DecodeDelegate final : public dio::DecodeDelegate
-{
+class DecodeDelegate final : public dio::DecodeDelegate {
 public:
     DecodeDelegate() = default;
-
-    ~DecodeDelegate()
-    {
-        delete m_sprite;
-    }
+    ~DecodeDelegate() { delete m_sprite; }
 
     void error(const std::string &msg) override
     {
         qWarning("QAsepriteHandler: Error: %s", msg.c_str());
-        m_error = QString::fromStdString(msg);
     }
 
     void incompatibilityError(const std::string &msg) override
     {
         qWarning("QAsepriteHandler: Incompatibility error: %s", msg.c_str());
-        m_error = QString::fromStdString(msg);
     }
 
-    bool decodeOneFrame() override
-    {
-        return true;
-    }
-
-    void onSprite(doc::Sprite *sprite) override
-    {
-        m_sprite = sprite;
-    }
-
-    doc::Sprite *sprite()
-    {
-        return m_sprite;
-    }
-
-    const QString &error() const
-    {
-        return m_error;
-    }
+    bool decodeOneFrame() override { return true; }
+    void onSprite(doc::Sprite *sprite) override { m_sprite = sprite; }
+    doc::Sprite *sprite() { return m_sprite; }
 
 private:
     doc::Sprite *m_sprite = nullptr;
-    QString m_error;
 };
 
-
-class QAsepriteHandler : public QImageIOHandler
-{
+class QAsepriteHandler : public QImageIOHandler {
 public:
     bool canRead() const override
     {
@@ -127,10 +92,8 @@ public:
 
     bool read(QImage *dest) override
     {
-        /**
-         * This code is based on the desktop::ThumbnailHandler::GetThumbnail()
-         * function from the Aseprite's Windows thumbnailer.
-         */
+        // This code is based on the desktop::ThumbnailHandler::GetThumbnail()
+        // function from the Aseprite's Windows thumbnailer.
 
         std::unique_ptr<doc::Image> image;
 
@@ -142,14 +105,12 @@ public:
 
             const doc::Sprite *sprite = delegate.sprite();
 
-            image.reset(doc::Image::create(doc::IMAGE_RGB,
-                                           sprite->width(),
-                                           sprite->height()));
+            image.reset(doc::Image::create(doc::IMAGE_RGB, sprite->width(), sprite->height()));
 
             render::Render render;
             render.renderSprite(image.get(), sprite, doc::frame_t(0));
 
-        } catch (const std::exception&) {
+        } catch (const std::exception &) {
             return false;
         }
 
@@ -171,22 +132,16 @@ public:
         if (!device)
             return false;
 
-        const qint64 peekBytes = 8;
-        const QByteArray header = device->peek(peekBytes);
-        if (header.size() < peekBytes)
-            return false;
-
+        const QByteArray header = device->peek(8);
         const uint8_t *headerBuffer = reinterpret_cast<const uint8_t *>(header.constData());
-        const dio::FileFormat format =
-                dio::detect_format_by_file_content_bytes(headerBuffer, header.size());
+        const dio::FileFormat format = dio::detect_format_by_file_content_bytes(headerBuffer,
+                                                                                header.size());
 
         return format == dio::FileFormat::ASE_ANIMATION;
     }
 };
 
-
-class AsepriteImagePlugin : public QImageIOPlugin
-{
+class AsepriteImagePlugin : public QImageIOPlugin {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID QImageIOHandlerFactoryInterface_iid FILE "qaseprite.json")
 
@@ -195,7 +150,8 @@ public:
         : QImageIOPlugin(parent)
     {}
 
-    QImageIOPlugin::Capabilities capabilities(QIODevice *device, const QByteArray &format) const override
+    QImageIOPlugin::Capabilities capabilities(QIODevice *device,
+                                              const QByteArray &format) const override
     {
         if (format == "ase" || format == "aseprite")
             return CanRead;

@@ -15,7 +15,7 @@ We use Aseprite as a Git submodule. Make sure to update it recursively:
 
 > Not all of Aseprite is free software, but this plugin only uses MIT-licensed
 > parts of Aseprite (dio, render and their dependencies doc, fixmath, flic,
-> gfx, render and base).
+> gfx and base).
 
 ### Install Dependencies
 
