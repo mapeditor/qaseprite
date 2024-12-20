@@ -10,8 +10,17 @@ on:
 
 jobs:
   ubuntu:
-    name: Ubuntu
+    name: Ubuntu ${{ matrix.ubuntu_version }} (Qt ${{ matrix.qt_version }})
     runs-on: ubuntu-24.04
+
+    matrix:
+      include:
+      - ubuntu_version: 22.04
+        qt_version: 5
+        qt_package: qtbase5-dev
+      - ubuntu_version: 24.04
+        qt_version: 6
+        qt_package: qt6-base-dev
 
     steps:
     - name: Checkout repository
@@ -27,13 +36,13 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt-get install \
+          ${{ matrix.qt_package }} \
           libfreetype-dev \
           libgl1-mesa-dev \
           libharfbuzz-dev \
           libpixman-1-dev \
           libxcursor-dev \
           libxi-dev \
-          qtbase5-dev \
           zlib1g-dev
 
     - name: Build
@@ -44,4 +53,4 @@ jobs:
           -DUSE_SHARED_FREETYPE=on \
           -DUSE_SHARED_HARFBUZZ=on
         cmake --build build --config Release
-        cmake --install build --config Release
+        sudo cmake --install build --config Release
