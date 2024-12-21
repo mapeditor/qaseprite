@@ -55,3 +55,57 @@ jobs:
           -DUSE_SHARED_HARFBUZZ=on
         cmake --build build --config Release
         sudo cmake --install build --config Release
+
+  macos:
+    name: macOS (${{ matrix.version_suffix }})
+    runs-on: macos-latest
+
+
+    strategy:
+      matrix:
+        include:
+        - qt_version: 5.12.12
+          qt_modules: ""
+          version_suffix: "10.12-10.15"
+          architectures: x86_64
+        - qt_version: 6.8.1
+          qt_modules: "qtimageformats"
+          version_suffix: "11+"
+          architectures: x86_64;arm64
+
+    env:
+      TILED_VERSION: ${{ needs.version.outputs.version }}
+      QT_VERSION: ${{ matrix.qt_version }}
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        submodules: 'recursive'
+
+    - name: Setup ccache
+      uses: hendrikmuhs/ccache-action@v1
+      with:
+        max-size: 50M
+
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v4
+      with:
+        version: ${{ matrix.qt_version }}
+        arch: clang_64
+        modules: ${{ matrix.qt_modules }}
+        cache: true
+
+    - name: Install dependencies
+      run: |
+        brew install pixman 
+
+    - name: Build
+      run: |
+        cmake -B build -DCMAKE_BUILD_TYPE=Release \
+          -DUSE_SHARED_ZLIB=on \
+          -DUSE_SHARED_FREETYPE=on \
+          -DUSE_SHARED_HARFBUZZ=on \
+          -DCMAKE_OSX_ARCHITECTURES='${{ matrix.architectures }}'
+        cmake --build build --config Release
+        sudo cmake --install build --config Release
