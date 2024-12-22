@@ -55,3 +55,45 @@ jobs:
           -DUSE_SHARED_HARFBUZZ=on
         cmake --build build --config Release
         sudo cmake --install build --config Release
+
+  macos:
+    name: macOS ${{ matrix.macos_version }} (Qt ${{ matrix.qt_version }})
+    runs-on: macos-${{ matrix.macos_version }}
+
+    strategy:
+      matrix:
+        include:
+        - macos_version: 14
+          qt_version: 5
+          qt_exact_version: 5.15.2
+          architectures: x86_64
+        - macos_version: 15
+          qt_version: 6
+          qt_exact_version: 6.8.1
+          architectures: x86_64;arm64
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        submodules: 'recursive'
+
+    - name: Setup ccache
+      uses: hendrikmuhs/ccache-action@v1
+      with:
+        max-size: 50M
+
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v4
+      with:
+        version: ${{ matrix.qt_exact_version }}
+        arch: clang_64
+        cache: true
+
+    - name: Build
+      run: |
+        cmake -B build -DCMAKE_BUILD_TYPE=Release \
+          -DUSE_SHARED_ZLIB=on \
+          -DCMAKE_OSX_ARCHITECTURES='${{ matrix.architectures }}'
+        cmake --build build --config Release
+        sudo cmake --install build --config Release
