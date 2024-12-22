@@ -66,9 +66,11 @@ jobs:
         - macos_version: 14
           qt_version: 5
           qt_exact_version: 5.15.2
+          architectures: x86_64
         - macos_version: 15
           qt_version: 6
           qt_exact_version: 6.8.1
+          architectures: x86_64;arm64
 
     steps:
     - name: Checkout repository
@@ -91,6 +93,7 @@ jobs:
     - name: Build
       run: |
         cmake -B build -DCMAKE_BUILD_TYPE=Release \
-          -DUSE_SHARED_ZLIB=on
+          -DUSE_SHARED_ZLIB=on \
+          -DCMAKE_OSX_ARCHITECTURES='${{ matrix.architectures }}'
         cmake --build build --config Release
         sudo cmake --install build --config Release
