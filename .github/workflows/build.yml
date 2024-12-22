@@ -97,3 +97,56 @@ jobs:
           -DCMAKE_OSX_ARCHITECTURES='${{ matrix.architectures }}'
         cmake --build build --config Release
         sudo cmake --install build --config Release
+
+  windows:
+    name: Windows (${{ matrix.arch }}-bit, Qt ${{ matrix.qt_version_major }})
+    runs-on: windows-latest
+
+    strategy:
+      matrix:
+        include:
+        - qt_version: 5.15.2
+          qt_version_major: 5
+          qt_arch: win64_msvc2019_64
+          arch: 32
+          openssl_arch: x86
+          filename_suffix: 'Windows-7-8_x86'
+          qt_modules: ''
+        - qt_version: 6.8.1
+          qt_version_major: 6
+          qt_arch: win64_msvc2022_64
+          qt_modules: ''
+          arch: 64
+          openssl_arch: x64
+          filename_suffix: 'Windows-10+_x86_64'
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        submodules: 'recursive'
+
+    - name: Setup ccache
+      uses: hendrikmuhs/ccache-action@v1
+      with:
+        max-size: 50M
+
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v4
+      with:
+        version: ${{ matrix.qt_version }}
+        arch: ${{ matrix.qt_arch }}
+        modules: ${{ matrix.qt_modules }}
+        aqtversion: '==3.1.19'
+        setup-python: false
+        cache: true
+
+    - name: Build
+      run: |
+        cmake -B build -DCMAKE_BUILD_TYPE=Release 
+        cmake --build build --config Release
+        cmake --install build --config Release 
