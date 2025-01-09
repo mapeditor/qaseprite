@@ -107,11 +107,17 @@ jobs:
         include:
         - qt_version: 5.15.2
           qt_version_major: 5
-          qt_arch: win64_msvc2019_64
+          qt_arch: win32_mingw81
+          mingw_component: tools_mingw
+          mingw_variant: qt.tools.win32_mingw810
+          mingw_dir: mingw810_32
           arch: 32
         - qt_version: 6.8.1
           qt_version_major: 6
-          qt_arch: win64_msvc2022_64
+          qt_arch: win64_mingw
+          mingw_component: tools_mingw1310
+          mingw_variant: qt.tools.win64_mingw1310
+          mingw_dir: mingw1310_64
           arch: 64
 
     defaults:
@@ -134,10 +140,11 @@ jobs:
       with:
         version: ${{ matrix.qt_version }}
         arch: ${{ matrix.qt_arch }}
+        tools: "${{ matrix.mingw_component }},${{ matrix.mingw_variant }}"
         cache: true
 
     - name: Build
       run: |
-        cmake -B build -DCMAKE_BUILD_TYPE=Release 
+        cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=i686-w64-mingw32-gcc.exe -DCMAKE_CXX_COMPILER=i686-w64-mingw32-g++.exe
         cmake --build build --config Release
-        cmake --install build --config Release 
+        cmake --install build --config Release
