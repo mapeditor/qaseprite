@@ -116,13 +116,11 @@ jobs:
           qt_arch: win32_mingw81
           qt_tools: tools_mingw,qt.tools.win32_mingw810
           cmake_args: -G "MinGW Makefiles"
-          mingw_dir: mingw810_32
         - windows_version: 2022
           qt_version: 6.8.1
           qt_arch: win64_mingw
           qt_tools: tools_mingw1310,qt.tools.win64_mingw1310
           cmake_args: -G "MinGW Makefiles"
-          mingw_dir: mingw1310_64
 
     defaults:
       run:
@@ -145,15 +143,10 @@ jobs:
     - name: Build
       run: |
         pushd aseprite
-        patch -p1 < ../aseprite-fix-zlib-include.patch
         patch -p1 < ../aseprite-msvc-dynamic-runtime.patch
         popd
         pushd aseprite/laf
         patch -p1 < ../../laf-msvc-dynamic-runtime.patch
-        patch -p1 < ../../laf-include-cstdint.patch
-        popd
-        pushd aseprite/third_party/cityhash
-        patch -p1 < ../../../cityhash-fix-byteswap.patch
         popd
         cmake -B build -DCMAKE_BUILD_TYPE=Release ${{ matrix.cmake_args }}
         cmake --build build --config Release
