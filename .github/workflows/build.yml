@@ -144,13 +144,12 @@ jobs:
         cache: true
 
     - name: Build
-      env:
-        CC: i686-w64-mingw32-gcc.exe
-        CXX: i686-w64-mingw32-g++.exe
       run: |
         pushd aseprite
         patch -p1 < ../aseprite-fix-zlib-include.patch
         popd
-        cmake -B build -DCMAKE_BUILD_TYPE=Release
+        cmake -B build -DCMAKE_BUILD_TYPE=Release \
+          -DCMAKE_C_COMPILER=i686-w64-mingw32-gcc.exe \
+          -DCMAKE_CXX_COMPILER=i686-w64-mingw32-g++.exe
         cmake --build build --config Release
         cmake --install build --config Release
