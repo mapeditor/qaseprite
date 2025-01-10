@@ -148,7 +148,9 @@ jobs:
         CC: i686-w64-mingw32-gcc.exe
         CXX: i686-w64-mingw32-g++.exe
       run: |
-        cmake -B build -DCMAKE_BUILD_TYPE=Release \
-          -DUSE_SHARED_ZLIB=on
+        pushd aseprite
+        patch -p1 < ../aseprite-fix-zlib-include.patch
+        popd
+        cmake -B build -DCMAKE_BUILD_TYPE=Release
         cmake --build build --config Release
         cmake --install build --config Release
