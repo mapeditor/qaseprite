@@ -64,12 +64,10 @@ jobs:
       matrix:
         include:
         - macos_version: 14
-          qt_version: 5
-          qt_exact_version: 5.15.2
+          qt_version: 5.15.2
           architectures: x86_64
         - macos_version: 15
-          qt_version: 6
-          qt_exact_version: 6.8.1
+          qt_version: 6.8.1
           architectures: x86_64;arm64
 
     steps:
@@ -86,7 +84,7 @@ jobs:
     - name: Install Qt
       uses: jurplel/install-qt-action@v4
       with:
-        version: ${{ matrix.qt_exact_version }}
+        version: ${{ matrix.qt_version }}
         arch: clang_64
         cache: true
 
@@ -99,20 +97,24 @@ jobs:
         sudo cmake --install build --config Release
 
   windows:
-    name: Windows (${{ matrix.arch }}-bit, Qt ${{ matrix.qt_version_major }})
+    name: Windows (Qt ${{ matrix.qt_version }}, ${{ matrix.qt_arch }})
     runs-on: windows-latest
 
     strategy:
       matrix:
         include:
         - qt_version: 5.15.2
-          qt_version_major: 5
-          qt_arch: win64_msvc2019_64
-          arch: 32
+          qt_arch: win32_msvc2019
         - qt_version: 6.8.1
-          qt_version_major: 6
           qt_arch: win64_msvc2022_64
-          arch: 64
+        - qt_version: 5.15.2
+          qt_arch: win32_mingw81
+          qt_tools: tools_mingw,qt.tools.win32_mingw810
+          mingw_dir: mingw810_32
+        - qt_version: 6.8.1
+          qt_arch: win64_mingw
+          qt_tools: tools_mingw1310,qt.tools.win64_mingw1310
+          mingw_dir: mingw1310_64
 
     defaults:
       run:
@@ -129,6 +131,7 @@ jobs:
       with:
         version: ${{ matrix.qt_version }}
         arch: ${{ matrix.qt_arch }}
+        tools: "${{ matrix.qt_tools }}"
         cache: true
 
     - name: Build
