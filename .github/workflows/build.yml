@@ -140,6 +140,10 @@ jobs:
       run: |
         pushd aseprite
         patch -p1 < ../aseprite-fix-zlib-include.patch
+        patch -p1 < ../aseprite-msvc-dynamic-runtime.patch
+        pushd laf
+        patch -p1 < ../../laf-msvc-dynamic-runtime.patch
+        popd
         popd
         cmake -B build -DCMAKE_BUILD_TYPE=Release
         cmake --build build --config Release
