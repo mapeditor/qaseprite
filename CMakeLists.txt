@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.14)
+cmake_minimum_required(VERSION 3.16)
 
 project(qaseprite LANGUAGES CXX)
 
@@ -18,7 +18,7 @@ set(ENABLE_WEBP         off)
 
 add_subdirectory(aseprite EXCLUDE_FROM_ALL)
 
-add_library(qaseprite SHARED
+add_library(qaseprite MODULE
   qaseprite.cpp
   qaseprite.json
 )
@@ -49,4 +49,5 @@ endif()
 
 install(
   TARGETS qaseprite
+  RUNTIME DESTINATION "${QT_INSTALL_PREFIX}/${QT_INSTALL_PLUGINS}/imageformats"
   LIBRARY DESTINATION "${QT_INSTALL_PREFIX}/${QT_INSTALL_PLUGINS}/imageformats")

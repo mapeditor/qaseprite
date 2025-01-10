@@ -1,0 +1,43 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index b846431..2c2646a 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -8,7 +8,7 @@ cmake_minimum_required(VERSION 3.16)
+ # the static version of the libc runtime
+ set(CMAKE_USER_MAKE_RULES_OVERRIDE ${CMAKE_CURRENT_SOURCE_DIR}/cmake/c_flag_overrides.cmake)
+ set(CMAKE_USER_MAKE_RULES_OVERRIDE_CXX ${CMAKE_CURRENT_SOURCE_DIR}/cmake/cxx_flag_overrides.cmake)
+-set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
++set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
+ 
+ project(laf C CXX)
+ 
+diff --git a/cmake/c_flag_overrides.cmake b/cmake/c_flag_overrides.cmake
+index 4096532..7cf2a28 100644
+--- a/cmake/c_flag_overrides.cmake
++++ b/cmake/c_flag_overrides.cmake
+@@ -1,6 +1,6 @@
+ if(MSVC)
+-  set(CMAKE_C_FLAGS_DEBUG_INIT            "/D_DEBUG /MTd /Zi /Ob0 /Od /RTC1")
+-  set(CMAKE_C_FLAGS_MINSIZEREL_INIT       "/MT /O1 /Ob1 /D NDEBUG")
+-  set(CMAKE_C_FLAGS_RELEASE_INIT          "/MT /O2 /Ob2 /D NDEBUG")
+-  set(CMAKE_C_FLAGS_RELWITHDEBINFO_INIT   "/MT /Zi /O2 /Ob1 /D NDEBUG")
++  set(CMAKE_C_FLAGS_DEBUG_INIT            "/D_DEBUG /MDd /Zi /Ob0 /Od /RTC1")
++  set(CMAKE_C_FLAGS_MINSIZEREL_INIT       "/MD /O1 /Ob1 /D NDEBUG")
++  set(CMAKE_C_FLAGS_RELEASE_INIT          "/MD /O2 /Ob2 /D NDEBUG")
++  set(CMAKE_C_FLAGS_RELWITHDEBINFO_INIT   "/MD /Zi /O2 /Ob1 /D NDEBUG")
+ endif()
+diff --git a/cmake/cxx_flag_overrides.cmake b/cmake/cxx_flag_overrides.cmake
+index a73eb94..f0ee19b 100644
+--- a/cmake/cxx_flag_overrides.cmake
++++ b/cmake/cxx_flag_overrides.cmake
+@@ -1,6 +1,6 @@
+ if(MSVC)
+-  set(CMAKE_CXX_FLAGS_DEBUG_INIT          "/D_DEBUG /MTd /Zi /Ob0 /Od /RTC1")
+-  set(CMAKE_CXX_FLAGS_MINSIZEREL_INIT     "/MT /O1 /Ob1 /D NDEBUG")
+-  set(CMAKE_CXX_FLAGS_RELEASE_INIT        "/MT /O2 /Ob2 /D NDEBUG")
+-  set(CMAKE_CXX_FLAGS_RELWITHDEBINFO_INIT "/MT /Zi /O2 /Ob1 /D NDEBUG")
++  set(CMAKE_CXX_FLAGS_DEBUG_INIT          "/D_DEBUG /MDd /Zi /Ob0 /Od /RTC1")
++  set(CMAKE_CXX_FLAGS_MINSIZEREL_INIT     "/MD /O1 /Ob1 /D NDEBUG")
++  set(CMAKE_CXX_FLAGS_RELEASE_INIT        "/MD /O2 /Ob2 /D NDEBUG")
++  set(CMAKE_CXX_FLAGS_RELWITHDEBINFO_INIT "/MD /Zi /O2 /Ob1 /D NDEBUG")
+ endif()
