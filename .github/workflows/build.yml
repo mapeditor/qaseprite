@@ -105,15 +105,19 @@ jobs:
         include:
         - qt_version: 5.15.2
           qt_arch: win32_msvc2019
+          cmake_args: -G "Visual Studio 16 2019" -A Win32
         - qt_version: 6.8.1
           qt_arch: win64_msvc2022_64
+          cmake_args: -G "Visual Studio 17 2022" -A x64
         - qt_version: 5.15.2
           qt_arch: win32_mingw81
           qt_tools: tools_mingw,qt.tools.win32_mingw810
+          cmake_args: -G "MinGW Makefiles"
           mingw_dir: mingw810_32
         - qt_version: 6.8.1
           qt_arch: win64_mingw
           qt_tools: tools_mingw1310,qt.tools.win64_mingw1310
+          cmake_args: -G "MinGW Makefiles"
           mingw_dir: mingw1310_64
 
     defaults:
@@ -143,6 +147,6 @@ jobs:
         patch -p1 < ../../laf-msvc-dynamic-runtime.patch
         popd
         popd
-        cmake -B build -DCMAKE_BUILD_TYPE=Release
+        cmake -B build -DCMAKE_BUILD_TYPE=Release ${{ matrix.cmake_args }}
         cmake --build build --config Release
         cmake --install build --config Release
