@@ -124,11 +124,6 @@ jobs:
       with:
         submodules: 'recursive'
 
-    - name: Setup ccache
-      uses: hendrikmuhs/ccache-action@v1
-      with:
-        max-size: 50M
-
     - name: Install Qt
       uses: jurplel/install-qt-action@v4
       with:
