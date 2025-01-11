@@ -30,27 +30,29 @@ target_link_libraries(qaseprite
             dio-lib
             render-lib)
 
-if(DEFINED ENV{QT_PLUGIN_PATH})
-  set(QT_PLUGIN_PATH $ENV{QT_PLUGIN_PATH})
-else()
+set(QT_PLUGIN_PATH "" CACHE STRING "Install location for Qt plugins")
+
+if(NOT QT_PLUGIN_PATH)
   set(QT_INSTALL_PREFIX ${QT${QT_VERSION_MAJOR}_INSTALL_PREFIX})
   set(QT_INSTALL_PLUGINS ${QT${QT_VERSION_MAJOR}_INSTALL_PLUGINS})
 
-  # If QT_INSTALL_PREFIX is empty, try to derive it from QT_DIR, cutting off the
-  # last three components ("lib/cmake/Qt5") from the path
-  if(NOT QT_INSTALL_PREFIX)
-    set(QT_INSTALL_PREFIX ${QT_DIR})
-    get_filename_component(QT_INSTALL_PREFIX ${QT_INSTALL_PREFIX} DIRECTORY)
-    get_filename_component(QT_INSTALL_PREFIX ${QT_INSTALL_PREFIX} DIRECTORY)
-    get_filename_component(QT_INSTALL_PREFIX ${QT_INSTALL_PREFIX} DIRECTORY)
+  if(DEFINED ENV{QT_PLUGIN_PATH})
+    set(QT_PLUGIN_PATH $ENV{QT_PLUGIN_PATH})
+  elseif(QT_INSTALL_PREFIX AND QT_INSTALL_PLUGINS)
+    set(QT_PLUGIN_PATH "${QT_INSTALL_PREFIX}/${QT_INSTALL_PLUGINS}")
+  else()
+    if(NOT QT_QMAKE_EXECUTABLE)
+      find_program(QT_QMAKE_EXECUTABLE NAMES "qmake" "qmake-qt5" "qmake.exe")
+    endif()
+    if(QT_QMAKE_EXECUTABLE)
+      execute_process(COMMAND "${QT_QMAKE_EXECUTABLE}" "-query" "QT_INSTALL_PLUGINS"
+                      OUTPUT_VARIABLE QT_PLUGIN_PATH
+                      OUTPUT_STRIP_TRAILING_WHITESPACE)
+    else()
+      message(FATAL_ERROR "Cannot find qmake executable")
+    endif()
   endif()
-
-  # If QT_INSTALL_PLUGINS is empty, set it to "plugins"
-  if(NOT QT_INSTALL_PLUGINS)
-    set(QT_INSTALL_PLUGINS "plugins")
-  endif()
-
-  set(QT_PLUGIN_PATH "${QT_INSTALL_PREFIX}/${QT_INSTALL_PLUGINS}")
+  set(QT_PLUGIN_PATH "${QT_PLUGIN_PATH}" CACHE STRING "Install location for Qt plugins" FORCE)
 endif()
 
 install(
