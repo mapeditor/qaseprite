@@ -41,7 +41,9 @@ if(NOT QT_PLUGIN_PATH)
   elseif(QT_INSTALL_PREFIX AND QT_INSTALL_PLUGINS)
     set(QT_PLUGIN_PATH "${QT_INSTALL_PREFIX}/${QT_INSTALL_PLUGINS}")
   else()
-    find_program(QT_QMAKE_EXECUTABLE NAMES "qmake" "qmake-qt5" "qmake.exe")
+    if(NOT QT_QMAKE_EXECUTABLE)
+      find_program(QT_QMAKE_EXECUTABLE NAMES "qmake" "qmake-qt5" "qmake.exe")
+    endif()
     if(QT_QMAKE_EXECUTABLE)
       execute_process(COMMAND "${QT_QMAKE_EXECUTABLE}" "-query" "QT_INSTALL_PLUGINS"
                       OUTPUT_VARIABLE QT_PLUGIN_PATH
