@@ -30,27 +30,32 @@ target_link_libraries(qaseprite
             dio-lib
             render-lib)
 
-if(DEFINED ENV{QT_PLUGIN_PATH})
-  set(QT_PLUGIN_PATH $ENV{QT_PLUGIN_PATH})
-else()
-  set(QT_INSTALL_PREFIX ${QT${QT_VERSION_MAJOR}_INSTALL_PREFIX})
-  set(QT_INSTALL_PLUGINS ${QT${QT_VERSION_MAJOR}_INSTALL_PLUGINS})
+set(QT_PLUGIN_PATH "" CACHE STRING "Install location for Qt plugins")
 
-  # If QT_INSTALL_PREFIX is empty, try to derive it from QT_DIR, cutting off the
-  # last three components ("lib/cmake/Qt5") from the path
-  if(NOT QT_INSTALL_PREFIX)
-    set(QT_INSTALL_PREFIX ${QT_DIR})
-    get_filename_component(QT_INSTALL_PREFIX ${QT_INSTALL_PREFIX} DIRECTORY)
-    get_filename_component(QT_INSTALL_PREFIX ${QT_INSTALL_PREFIX} DIRECTORY)
-    get_filename_component(QT_INSTALL_PREFIX ${QT_INSTALL_PREFIX} DIRECTORY)
+if(NOT QT_PLUGIN_PATH)
+  if(DEFINED ENV{QT_PLUGIN_PATH})
+    set(QT_PLUGIN_PATH $ENV{QT_PLUGIN_PATH})
+  else()
+    set(QT_INSTALL_PREFIX ${QT${QT_VERSION_MAJOR}_INSTALL_PREFIX})
+    set(QT_INSTALL_PLUGINS ${QT${QT_VERSION_MAJOR}_INSTALL_PLUGINS})
+
+    # If QT_INSTALL_PREFIX is empty, try to derive it from QT_DIR, cutting off the
+    # last three components ("lib/cmake/Qt5") from the path
+    if(NOT QT_INSTALL_PREFIX)
+      set(QT_INSTALL_PREFIX ${QT_DIR})
+      get_filename_component(QT_INSTALL_PREFIX ${QT_INSTALL_PREFIX} DIRECTORY)
+      get_filename_component(QT_INSTALL_PREFIX ${QT_INSTALL_PREFIX} DIRECTORY)
+      get_filename_component(QT_INSTALL_PREFIX ${QT_INSTALL_PREFIX} DIRECTORY)
+    endif()
+
+    # If QT_INSTALL_PLUGINS is empty, set it to "plugins"
+    if(NOT QT_INSTALL_PLUGINS)
+      set(QT_INSTALL_PLUGINS "plugins")
+    endif()
+
+    set(QT_PLUGIN_PATH "${QT_INSTALL_PREFIX}/${QT_INSTALL_PLUGINS}")
   endif()
-
-  # If QT_INSTALL_PLUGINS is empty, set it to "plugins"
-  if(NOT QT_INSTALL_PLUGINS)
-    set(QT_INSTALL_PLUGINS "plugins")
-  endif()
-
-  set(QT_PLUGIN_PATH "${QT_INSTALL_PREFIX}/${QT_INSTALL_PLUGINS}")
+  set(QT_PLUGIN_PATH "${QT_PLUGIN_PATH}" CACHE STRING "Install location for Qt plugins" FORCE)
 endif()
 
 install(
