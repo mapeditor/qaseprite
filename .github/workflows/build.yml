@@ -27,7 +27,17 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
       with:
-        submodules: 'recursive'
+        submodules: true
+
+    - name: Update submodules
+      run: |
+        cd aseprite
+        git submodule update --init --depth 1 \
+          laf \
+          src/flic \
+          third_party/cityhash \
+          third_party/fmt \
+          third_party/pixman
 
     - name: Setup ccache
       uses: hendrikmuhs/ccache-action@v1
@@ -74,8 +84,9 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
-      with:
-        submodules: 'recursive'
+
+    - name: Update submodules
+      run: ./update-submodules.sh
 
     - name: Setup ccache
       uses: hendrikmuhs/ccache-action@v1
@@ -130,8 +141,9 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
-      with:
-        submodules: 'recursive'
+
+    - name: Update submodules
+      run: ./update-submodules.sh
 
     - name: Install Qt
       uses: jurplel/install-qt-action@v4
