@@ -7,9 +7,6 @@ then
     exit 1
 fi
 
-# Make sure the submodules are up-to-date
-./update-submodules.sh
-
 # Create the source archive
 git ls-files --recurse-submodules -z \
     | grep -z \
@@ -34,4 +31,4 @@ git ls-files --recurse-submodules -z \
         -e '^aseprite/laf/third_party/googletest/' \
         -e '^aseprite/third_party/harfbuzz/test/' \
         -e '^aseprite/third_party/libpng/contrib/' \
-  | tar caf qaseprite-${VERSION}.tar.gz --xform s:^:qaseprite-${VERSION}/: --null -T-
+  | tar caf qaseprite-${VERSION}-source.tar.gz --xform s:^:qaseprite-${VERSION}/: --null -T-
