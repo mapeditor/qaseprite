@@ -34,4 +34,4 @@ git ls-files --recurse-submodules -z \
         -e '^aseprite/laf/third_party/googletest/' \
         -e '^aseprite/third_party/harfbuzz/test/' \
         -e '^aseprite/third_party/libpng/contrib/' \
-  | tar caf qaseprite-${VERSION}.tar.gz --xform s:^:qaseprite-${VERSION}/: --null -T-
+  | tar caf qaseprite-${VERSION}-source.tar.gz --xform s:^:qaseprite-${VERSION}/: --null -T-
