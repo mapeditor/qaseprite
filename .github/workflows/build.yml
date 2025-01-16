@@ -58,6 +58,12 @@ jobs:
         cmake --build build --config Release
         sudo cmake --install build --config Release
 
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: ubuntu-${{ matrix.ubuntu_version }}-qt-${{ matrix.qt_version }}
+        path: build/libqaseprite.so
+
   macos:
     name: macOS ${{ matrix.macos_version }} (Qt ${{ matrix.qt_version }})
     runs-on: macos-${{ matrix.macos_version }}
@@ -99,6 +105,12 @@ jobs:
         cmake --build build --config Release
         sudo cmake --install build --config Release
 
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: macos-${{ matrix.macos_version }}-qt-${{ matrix.qt_version }}
+        path: build/libqaseprite.so
+
   windows:
     name: Windows (Qt ${{ matrix.qt_version }}, ${{ matrix.qt_arch }})
     runs-on: windows-${{ matrix.windows_version }}
@@ -110,20 +122,24 @@ jobs:
           qt_version: 5.15.2
           qt_arch: win32_msvc2019
           cmake_args: -G "Visual Studio 16 2019" -A Win32
+          artifact_path: build/Release/qaseprite.dll
         - windows_version: 2022
           qt_version: 6.8.1
           qt_arch: win64_msvc2022_64
           cmake_args: -G "Visual Studio 17 2022" -A x64
+          artifact_path: build/Release/qaseprite.dll
         - windows_version: 2019
           qt_version: 5.15.2
           qt_arch: win32_mingw81
           qt_tools: tools_mingw,qt.tools.win32_mingw810
           cmake_args: -G "MinGW Makefiles"
+          artifact_path: build/libqaseprite.dll
         - windows_version: 2022
           qt_version: 6.8.1
           qt_arch: win64_mingw
           qt_tools: tools_mingw1310,qt.tools.win64_mingw1310
           cmake_args: -G "MinGW Makefiles"
+          artifact_path: build/libqaseprite.dll
 
     defaults:
       run:
@@ -152,3 +168,9 @@ jobs:
         cmake -B build -DCMAKE_BUILD_TYPE=Release ${{ matrix.cmake_args }}
         cmake --build build --config Release
         cmake --install build --config Release
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ matrix.qt_arch }}-qt-${{ matrix.qt_version }}
+        path: ${{ matrix.artifact_path }}
