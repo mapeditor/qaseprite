@@ -26,18 +26,9 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
-      with:
-        submodules: true
 
     - name: Update submodules
-      run: |
-        cd aseprite
-        git submodule update --init --depth 1 \
-          laf \
-          src/flic \
-          third_party/cityhash \
-          third_party/fmt \
-          third_party/pixman
+      run: ./update-submodules.sh --minimal
 
     - name: Setup ccache
       uses: hendrikmuhs/ccache-action@v1
@@ -86,7 +77,7 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Update submodules
-      run: ./update-submodules.sh
+      run: ./update-submodules.sh --no-zlib
 
     - name: Setup ccache
       uses: hendrikmuhs/ccache-action@v1
