@@ -36,6 +36,7 @@ but you can tell CMake to look for system versions instead by adding the
 following parameters:
 
     -DUSE_SHARED_ZLIB=on \
+    -DUSE_SHARED_LIBPNG=on \
     -DUSE_SHARED_PIXMAN=on \
     -DUSE_SHARED_FREETYPE=on \
     -DUSE_SHARED_HARFBUZZ=on

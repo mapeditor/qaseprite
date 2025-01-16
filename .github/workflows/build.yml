@@ -50,6 +50,7 @@ jobs:
       run: |
         cmake -B build -DCMAKE_BUILD_TYPE=Release \
           -DUSE_SHARED_ZLIB=on \
+          -DUSE_SHARED_LIBPNG=on \
           -DUSE_SHARED_PIXMAN=on \
           -DUSE_SHARED_FREETYPE=on \
           -DUSE_SHARED_HARFBUZZ=on
@@ -142,9 +143,6 @@ jobs:
 
     - name: Build
       run: |
-        pushd aseprite
-        patch -p1 < ../aseprite-msvc-dynamic-runtime.patch
-        popd
         pushd aseprite/laf
         patch -p1 < ../../laf-msvc-dynamic-runtime.patch
         popd
