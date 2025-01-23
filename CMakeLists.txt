@@ -280,13 +280,23 @@ add_subdirectory(aseprite/src/dio       EXCLUDE_FROM_ALL)
 # qaseprite specific setup
 # ------------------------
 
-add_library(qaseprite MODULE
-  qaseprite.cpp
-  qaseprite.json
+if(QT_VERSION_MAJOR EQUAL 5)
+    include(cmake/Qt5Plugin.cmake)
+endif()
+
+qt_add_plugin(AsepriteImagePlugin SHARED)
+
+# For Qt 6.0-6.4, qt_add_plugin didn't support adding the sources directly,
+# hence we add them using target_sources instead.
+target_sources(AsepriteImagePlugin
+    PRIVATE qaseprite.cpp
+            qaseprite.json
 )
 
-set_target_properties(qaseprite PROPERTIES AUTOMOC ON)
-target_link_libraries(qaseprite
+set_target_properties(AsepriteImagePlugin PROPERTIES
+    AUTOMOC ON
+    LIBRARY_OUTPUT_NAME qaseprite)
+target_link_libraries(AsepriteImagePlugin
     PRIVATE Qt${QT_VERSION_MAJOR}::Gui
             laf-base
             dio-lib
@@ -318,6 +328,6 @@ if(NOT QT_PLUGIN_PATH)
 endif()
 
 install(
-  TARGETS qaseprite
+  TARGETS AsepriteImagePlugin
   RUNTIME DESTINATION "${QT_PLUGIN_PATH}/imageformats"
   LIBRARY DESTINATION "${QT_PLUGIN_PATH}/imageformats")
