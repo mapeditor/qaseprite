@@ -43,7 +43,7 @@ function(qt5_add_plugin target)
     _qt_wrap_internal_set_up_static_runtime_library(${target})
     _qt_wrap_internal_apply_shared_win_prefix_and_suffix("${target}")
 
-    if(arg_MODULE AND APPLE)
+    if(APPLE)
         # CMake defaults to using .so extensions for loadable modules, aka plugins,
         # but Qt plugins are actually suffixed with .dylib.
         set_property(TARGET "${target}" PROPERTY SUFFIX ".dylib")
