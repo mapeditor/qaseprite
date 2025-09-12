@@ -25,6 +25,7 @@ git ls-files --recurse-submodules -z \
         -e '^aseprite/third_party/libpng' \
         -e '^aseprite/third_party/pixman' \
         -e '^aseprite/third_party/zlib' \
+        -e '^cmake/' \
     | grep -z --invert-match \
         -e '\.git' \
         -e '^aseprite/laf/clip/' \
