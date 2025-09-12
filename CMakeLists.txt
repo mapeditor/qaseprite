@@ -5,7 +5,7 @@
 # based on the CMakeLists.txt files from the Aseprite project, adjusted
 # to only build the necessary parts for the Qt plugin.
 
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.17)
 
 project(qaseprite LANGUAGES C CXX)
 
@@ -74,6 +74,14 @@ option(ENABLE_CCACHE       "Use CCache to improve recompilation speed (optional)
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Gui)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Gui)
 
+set(LAF_WITH_EXAMPLES   off)
+set(LAF_WITH_TESTS      off)
+set(LAF_WITH_CLIP       off)
+set(LAF_BACKEND         "none")
+
+######################################################################
+# Directories
+
 set(LIBPNG_DIR          ${CMAKE_CURRENT_SOURCE_DIR}/aseprite/third_party/libpng)
 set(PIXMAN_DIR          ${CMAKE_CURRENT_SOURCE_DIR}/aseprite/third_party/pixman)
 set(FREETYPE_DIR        ${CMAKE_CURRENT_SOURCE_DIR}/aseprite/third_party/freetype2)
@@ -122,7 +130,12 @@ if(USE_SHARED_LIBPNG)
   add_definitions(${PNG_DEFINITIONS})
 else()
   set(PNG_FOUND ON)
-  set(PNG_LIBRARY png_static)
+  # Skia on Linux includes libpng symbols
+  if(UNIX AND NOT APPLE AND LAF_BACKEND STREQUAL "skia")
+    set(PNG_LIBRARY skia)
+  else()
+    set(PNG_LIBRARY png_static)
+  endif()
   set(PNG_LIBRARIES ${PNG_LIBRARY})
   set(PNG_INCLUDE_DIRS
     ${LIBPNG_DIR}
@@ -180,7 +193,9 @@ if(NOT USE_SHARED_ZLIB)
   set(SKIP_INSTALL_ALL on)
   # Don't build zlib tests
   set(ZLIB_BUILD_EXAMPLES OFF CACHE BOOL "Enable Zlib Examples")
+  set(ZLIB_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/aseprite/third_party/zlib" CACHE INTERNAL "")
   add_subdirectory(aseprite/third_party/zlib EXCLUDE_FROM_ALL)
+  add_library(ZLIB::ZLIB ALIAS zlibstatic)
 endif()
 
 if(NOT USE_SHARED_LIBPNG)
@@ -238,11 +253,6 @@ add_subdirectory(aseprite/third_party/fmt      EXCLUDE_FROM_ALL)
 
 # cityhash
 add_subdirectory(aseprite/third_party/cityhash EXCLUDE_FROM_ALL)
-
-set(LAF_WITH_EXAMPLES   off)
-set(LAF_WITH_TESTS      off)
-set(LAF_WITH_CLIP       off)
-set(LAF_BACKEND         "none")
 
 add_subdirectory(aseprite/laf EXCLUDE_FROM_ALL)
 
