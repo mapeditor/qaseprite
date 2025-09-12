@@ -75,7 +75,7 @@ jobs:
           qt_version: 5.15.2
           architectures: x86_64
         - macos_version: 15
-          qt_version: 6.8.1
+          qt_version: 6.9.2
           architectures: x86_64;arm64
 
     steps:
@@ -118,24 +118,24 @@ jobs:
     strategy:
       matrix:
         include:
-        - windows_version: 2019
+        - windows_version: 2022
           qt_version: 5.15.2
           qt_arch: win32_msvc2019
-          cmake_args: -G "Visual Studio 16 2019" -A Win32
+          cmake_args: -G "Visual Studio 17 2022" -A Win32
           artifact_path: build/Release/qaseprite.dll
-        - windows_version: 2022
-          qt_version: 6.8.1
+        - windows_version: 2025
+          qt_version: 6.9.2
           qt_arch: win64_msvc2022_64
           cmake_args: -G "Visual Studio 17 2022" -A x64
           artifact_path: build/Release/qaseprite.dll
-        - windows_version: 2019
+        - windows_version: 2022
           qt_version: 5.15.2
           qt_arch: win32_mingw81
           qt_tools: tools_mingw,qt.tools.win32_mingw810
           cmake_args: -G "MinGW Makefiles"
           artifact_path: build/qaseprite.dll
-        - windows_version: 2022
-          qt_version: 6.8.1
+        - windows_version: 2025
+          qt_version: 6.9.2
           qt_arch: win64_mingw
           qt_tools: tools_mingw1310,qt.tools.win64_mingw1310
           cmake_args: -G "MinGW Makefiles"
