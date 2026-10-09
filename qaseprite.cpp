@@ -20,7 +20,7 @@ public:
     {}
 
     bool ok() const override { return m_ok; }
-    size_t tell() override { return m_device->pos(); }
+    size_t tell() const override { return m_device->pos(); }
 
     void seek(size_t absPos) override
     {
@@ -48,6 +48,14 @@ public:
     {
         if (!m_device->putChar(value))
             m_ok = false;
+    }
+
+    size_t writeBytes(uint8_t *buf, size_t n) override
+    {
+        auto bytesWritten = m_device->write(reinterpret_cast<const char *>(buf), n);
+        if (bytesWritten == -1)
+            m_ok = false;
+        return bytesWritten;
     }
 
 private:
