@@ -46,6 +46,7 @@ jobs:
           libpixman-1-dev \
           libxcursor-dev \
           libxi-dev \
+          libxrandr-dev \
           zlib1g-dev
 
     - name: Build
