@@ -37,6 +37,7 @@ jobs:
 
     - name: Install dependencies
       run: |
+        sudo apt-get update
         sudo apt-get install \
           ${{ matrix.qt_package }} \
           libfreetype-dev \
@@ -45,6 +46,7 @@ jobs:
           libpixman-1-dev \
           libxcursor-dev \
           libxi-dev \
+          libxrandr-dev \
           zlib1g-dev
 
     - name: Build
@@ -123,7 +125,7 @@ jobs:
           qt_arch: win32_msvc2019
           cmake_args: -G "Visual Studio 17 2022" -A Win32
           artifact_path: build/Release/qaseprite.dll
-        - windows_version: 2025
+        - windows_version: 2022
           qt_version: 6.9.2
           qt_arch: win64_msvc2022_64
           cmake_args: -G "Visual Studio 17 2022" -A x64
